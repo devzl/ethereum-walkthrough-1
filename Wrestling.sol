@@ -17,7 +17,7 @@ contract Wrestling {
 	uint private wrestler1Deposit;
 	uint private wrestler2Deposit;
 
-	bool public gameFinished; 
+	bool public gameFinished;
     address public theWinner;
     uint gains;
 
@@ -31,7 +31,7 @@ contract Wrestling {
     /**
     * The contract constructor
     */
-	function Wrestling() public {
+	constructor() public {
 		wrestler1 = msg.sender;
 	}
 
@@ -43,12 +43,12 @@ contract Wrestling {
 
         wrestler2 = msg.sender;
 
-        WrestlingStartsEvent(wrestler1, wrestler2);
+        emit WrestlingStartsEvent(wrestler1, wrestler2);
     }
 
     /**
-    * Every round a player can put a sum of ether, if one of the player put in twice or 
-    * more the money (in total) than the other did, the first wins 
+    * Every round a player can put a sum of ether, if one of the player put in twice or
+    * more the money (in total) than the other did, the first wins
     */
     function wrestle() public payable {
     	require(!gameFinished && (msg.sender == wrestler1 || msg.sender == wrestler2));
@@ -57,7 +57,7 @@ contract Wrestling {
     		require(wrestler1Played == false);
     		wrestler1Played = true;
     		wrestler1Deposit = wrestler1Deposit + msg.value;
-    	} else { 
+    	} else {
     		require(wrestler2Played == false);
     		wrestler2Played = true;
     		wrestler2Deposit = wrestler2Deposit + msg.value;
@@ -77,7 +77,7 @@ contract Wrestling {
     	wrestler1Played = false;
     	wrestler2Played = false;
 
-    	EndOfRoundEvent(wrestler1Deposit, wrestler2Deposit);
+    	emit EndOfRoundEvent(wrestler1Deposit, wrestler2Deposit);
     }
 
     function endOfGame(address winner) internal {
@@ -85,11 +85,11 @@ contract Wrestling {
         theWinner = winner;
 
         gains = wrestler1Deposit + wrestler2Deposit;
-        EndOfWrestlingEvent(winner, gains);
+        emit EndOfWrestlingEvent(winner, gains);
     }
 
     /**
-    * The withdraw function, following the withdraw pattern shown and explained here: 
+    * The withdraw function, following the withdraw pattern shown and explained here:
     * http://solidity.readthedocs.io/en/develop/common-patterns.html#withdrawal-from-contracts
     */
     function withdraw() public {
